@@ -139,6 +139,10 @@ fastify.get("/devops/check-license", function(request, reply) {
     })
 });
 
+fastify.get("/lb", function(request, reply) {
+      reply.send("Server Up");
+});
+
 
 // Run the server and report out to the logs
 fastify.listen(process.env.PORT, '0.0.0.0', function(err, address) {
