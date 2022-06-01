@@ -139,8 +139,14 @@ fastify.get("/devops/check-license", function(request, reply) {
     })
 });
 
+
+
 fastify.get("/lb", function(request, reply) {
-      reply.send("Server Up");
+  reply.send("Server Up");
+});
+
+fastify.get("/test", function(request, reply) {
+  reply.send("Hi");
 });
 
 
