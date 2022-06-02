@@ -1,8 +1,3 @@
-/**
-* This is the main Node.js server script for your project
-* Check out the two endpoints this back-end API provides in fastify.get and fastify.post below
-*/
-
 const path = require("path");
 const axios = require("axios");
 
@@ -12,18 +7,6 @@ const fastify = require("fastify")({
   logger: false,
   trustProxy: true
 });
-
-// ADD FAVORITES ARRAY VARIABLE FROM TODO HERE
-
-
-// Setup our static files
-fastify.register(require("fastify-static"), {
-  root: path.join(__dirname, "public"),
-  prefix: "/" // optional: default '/'
-});
-
-// fastify-formbody lets us parse incoming forms
-fastify.register(require("fastify-formbody"));
 
 fastify.get("/devops/license", function(request, reply) {
   const config = {
@@ -47,12 +30,8 @@ fastify.get("/devops/license", function(request, reply) {
     'x-refresh-cache': `${request.headers['x-refresh-cache']}`
   }
   
-  //console.log(`DEBUG url = ${url}, config = ${JSON.stringify(config)}, data = ${JSON.stringify(data)}`)
-  
   axios.post(url, data, config)
     .then(res => {
-      console.log(`DEBUG sending result`);
-      console.log(`DEBUG res = ${JSON.stringify(res.data)}`)
       if (res.data.status === "success") {
         reply.send(res.data.details);
       } else {
@@ -60,7 +39,6 @@ fastify.get("/devops/license", function(request, reply) {
       }
     })
     .catch(error => {
-      console.log(`DEBUG sending error`);
       reply.send(error);
     })
 });
@@ -85,11 +63,8 @@ fastify.get("/devops/auth", function(request, reply) {
     'x-refresh-cache': `${request.headers['x-refresh-cache']}`
   }
   
-  //console.log(`DEBUG url = ${url}, config = ${JSON.stringify(config)}, data = ${JSON.stringify(data)}`)
-  
   axios.post(url, data, config)
     .then(res => {
-      //console.log(`DEBUG sending result`);
       if (res.data.status === "success") {
         reply.send(res.data.details);
       } else {
@@ -97,7 +72,6 @@ fastify.get("/devops/auth", function(request, reply) {
       }
     })
     .catch(error => {
-      //console.log(`DEBUG sending error`);
       reply.send(error);
     })
 });
@@ -120,35 +94,23 @@ fastify.get("/devops/check-license", function(request, reply) {
     'devops-purpose': `${request.headers['devops-purpose']}`,
   }
   
-  //console.log(`DEBUG url = ${url}, config = ${JSON.stringify(config)}, data = ${JSON.stringify(data)}`)
-  
   axios.post(url, data, config)
     .then(res => {
-      //console.log(`DEBUG sending result`);
       if (res.data.status === "success") {
-        //console.log(`DEBUG sending result`);
-        //console.log(`DEBUG res = ${JSON.stringify(res.data)}`)
         reply.send(res.data.details);
       } else {
+        // Failed check-license returns 404 instead of 401
         reply.code(404).type('application/json').send("{ \"error\": \"" + res.data.details + "\" }");
       }
     })
     .catch(error => {
-      //console.log(`DEBUG sending error`);
       reply.send(error);
     })
 });
 
-
-
 fastify.get("/lb", function(request, reply) {
   reply.send("Server Up");
 });
-
-fastify.get("/test", function(request, reply) {
-  reply.send("Hi");
-});
-
 
 // Run the server and report out to the logs
 fastify.listen(process.env.PORT, '0.0.0.0', function(err, address) {
